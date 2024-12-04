@@ -9,8 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
-
 @Service
 @Slf4j
 public class OpenShiftApiService {
@@ -28,15 +26,12 @@ public class OpenShiftApiService {
     }
 
     private HttpHeaders createHeaders() {
-        if (!authService.hasCredentials()) {
-            throw new IllegalStateException("Please login first");
+        if (!authService.hasToken()) {
+            throw new IllegalStateException("No valid token found. Please login first.");
         }
 
-        String auth = authService.getUsername() + ":" + authService.getPassword();
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-        
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic " + encodedAuth);
+        headers.set("Authorization", "Bearer " + authService.getToken());
         headers.set("Accept", "application/json");
         return headers;
     }

@@ -1,37 +1,21 @@
 package com.monitor.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class AuthService {
-    private String currentUsername;
-    private String currentPassword;
-    private final PasswordService passwordService;
+    @Getter
+    private String token;
 
-    public void setCredentials(String username, String hashedPassword) {
-        this.currentUsername = username;
-        this.currentPassword = hashedPassword;
-        log.info("Credentials updated for user: {}", username);
+    public void setToken(String token) {
+        this.token = token;
+        log.info("OpenShift token updated");
     }
 
-    public String getUsername() {
-        return currentUsername;
-    }
-
-    public String getPassword() {
-        return currentPassword;
-    }
-
-    public boolean hasCredentials() {
-        return currentUsername != null && currentPassword != null;
-    }
-
-    public boolean verifyCredentials(String username, String hashedPassword) {
-        return username.equals(currentUsername) && 
-               hashedPassword.equals(currentPassword);
+    public boolean hasToken() {
+        return token != null && !token.isEmpty();
     }
 } 
