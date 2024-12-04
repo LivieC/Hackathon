@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -20,10 +19,10 @@ export class AuthService {
     formData.append('username', username);
     formData.append('password', password);
     
-    const headers = new HttpHeaders({
+    const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + btoa('openshift-challenging-client:') // 使用内置的 client
-    });
+      'Authorization': 'Basic ' + btoa('openshift-challenging-client:')
+    };
 
     return this.http.post(tokenUrl, formData.toString(), { headers }).pipe(
       tap((response: any) => {
