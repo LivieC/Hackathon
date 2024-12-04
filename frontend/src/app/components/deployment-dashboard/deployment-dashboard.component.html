@@ -1,0 +1,35 @@
+<div class="dashboard-container">
+  <h1>Deployment Status Dashboard</h1>
+
+  <div *ngIf="loading" class="loading">
+    Loading deployment status...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div class="environment-tabs">
+    <button class="tab" [class.active]="selectedEnv === 'sit'" (click)="selectedEnv = 'sit'">SIT</button>
+    <button class="tab" [class.active]="selectedEnv === 'uat'" (click)="selectedEnv = 'uat'">UAT</button>
+    <button class="tab" [class.active]="selectedEnv === 'prod'" (click)="selectedEnv = 'prod'">PROD</button>
+  </div>
+
+  <div class="deployments-grid">
+    <div *ngFor="let deployment of filteredDeployments" class="deployment-card" [class.healthy]="deployment.healthy">
+      <div class="card-header">
+        <h3>{{ deployment.projectName }}</h3>
+        <span class="status-badge" [class.success]="deployment.healthy">
+          {{ deployment.status }}
+        </span>
+      </div>
+      
+      <div class="deployment-details">
+        <p><strong>Version:</strong> {{ deployment.version }}</p>
+        <p><strong>Namespace:</strong> {{ deployment.namespace }}</p>
+        <p><strong>Replicas:</strong> {{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</p>
+        <p><strong>Last Updated:</strong> {{ deployment.lastUpdated | date:'medium' }}</p>
+      </div>
+    </div>
+  </div>
+</div> 
