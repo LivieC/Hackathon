@@ -11,23 +11,20 @@ target/
 
 # Angular
 .DS_Store
-node_modules/
-dist/
-tmp/
-out-tsc/
-bazel-out/
-chrome-profiler-events*.json
-speed-measure-plugin*.json
+**/node_modules/
+**/dist/
+**/tmp/
+**/out-tsc/
 
 # misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
+**/.sass-cache
+**/connect.lock
+**/coverage
+**/libpeerconnection.log
+**/npm-debug.log
+**/yarn-error.log
+**/testem.log
+**/typings
 
 # System Files
 .DS_Store
