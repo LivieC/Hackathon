@@ -6,3 +6,17 @@ java -version : 17.0.13
 Angular CLI: 18.2.2
 OS: win32 x64
 
+cd /path/to/your/project
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/your-username/your-repository.git
+git remote -v
+git branch -M main  # 将本地分支重命名为 main（如果需要）
+git push -u origin main
+
+# if can not push
+git pull origin master --rebase
+git add <conflicted-file>
+git rebase --continue
+git push -u origin master
