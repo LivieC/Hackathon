@@ -1,0 +1,8 @@
+project kit version:
+node -v : v20.10.0
+npm -v : 10.2.3
+mvn -v : 3.9.9
+java -version : 17.0.13
+Angular CLI: 18.2.2
+OS: win32 x64
+

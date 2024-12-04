@@ -1,0 +1,14 @@
+This backend implementation provides:
+1. OpenShift client configuration
+2. Model for deployment status
+3. Service to fetch deployment information
+4. REST API endpoint
+5. CORS configuration for frontend access
+6. Basic monitoring endpoints
+
+This implementation provides:
+1. Real-time deployment status updates every 30 seconds
+2. Environment-based filtering (SIT, UAT, PROD)
+3. Visual health indicators
+4. Responsive grid layout
+5. Error handling and loading states
