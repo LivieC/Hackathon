@@ -16,17 +16,4 @@ public class DeploymentStatus {
     private String namespace;
     private String clusterUrl;
     private boolean healthy;
-
-    // Default constructor
-    public DeploymentStatus() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    // Constructor with essential fields
-    public DeploymentStatus(String projectName, String environment, String version) {
-        this();
-        this.projectName = projectName;
-        this.environment = environment;
-        this.version = version;
-    }
 } 
