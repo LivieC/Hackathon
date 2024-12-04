@@ -12,3 +12,10 @@ This implementation provides:
 3. Visual health indicators
 4. Responsive grid layout
 5. Error handling and loading states
+
+enhance:
+1. 密码在传输前就已经被加密
+2. 使用 SHA-256 加密算法
+3. 加盐增加安全性
+4. 前后端使用相同的加密方式
+5. 密码永远不会以明文形式传输
