@@ -17,7 +17,7 @@ target/
 **/out-tsc/
 
 # Ignore Angular cache
-.angular/cache/
+frontend/.angular/cache/
 
 # misc
 **/.sass-cache
