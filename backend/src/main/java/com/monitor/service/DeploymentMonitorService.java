@@ -1,75 +1,53 @@
 package com.monitor.service;
 
 import com.monitor.model.DeploymentStatus;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.openshift.client.OpenShiftClient;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 @Slf4j
-@Profile("!dev")
-@RequiredArgsConstructor
 public class DeploymentMonitorService {
-
-    protected final OpenShiftClient openshiftClient;
     
     public List<DeploymentStatus> getAllDeploymentStatus() {
-        try {
-            List<DeploymentStatus> statusList = new ArrayList<>();
-            
-            openshiftClient.projects().list().getItems().forEach(project -> {
-                try {
-                    openshiftClient.apps().deployments()
-                            .inNamespace(project.getMetadata().getName())
-                            .list()
-                            .getItems()
-                            .forEach(deployment -> {
-                                DeploymentStatus status = createDeploymentStatus(project.getMetadata().getName(), deployment);
-                                statusList.add(status);
-                            });
-                } catch (Exception e) {
-                    log.error("Error fetching deployments for project {}: {}", 
-                            project.getMetadata().getName(), e.getMessage());
-                }
-            });
-            
-            return statusList;
-        } catch (Exception e) {
-            log.error("Error fetching deployment status", e);
-            return Collections.emptyList();
-        }
+        List<DeploymentStatus> statusList = new ArrayList<>();
+        
+        // 添加 SIT 环境的部署状态
+        addMockDeployment(statusList, "project1", "sit", "1.0.0", true);
+        addMockDeployment(statusList, "project2", "sit", "1.1.0", true);
+        
+        // 添加 UAT 环境的部署状态
+        addMockDeployment(statusList, "project1", "uat", "0.9.0", true);
+        addMockDeployment(statusList, "project2", "uat", "1.0.0", false);
+        
+        // 添加 PROD 环境的部署状态
+        addMockDeployment(statusList, "project1", "prod", "0.8.0", true);
+        addMockDeployment(statusList, "project2", "prod", "0.9.0", true);
+        
+        return statusList;
     }
 
-    private DeploymentStatus createDeploymentStatus(String projectName, Deployment deployment) {
+    private void addMockDeployment(List<DeploymentStatus> deployments, 
+                                 String projectName, 
+                                 String env, 
+                                 String version, 
+                                 boolean healthy) {
         DeploymentStatus status = new DeploymentStatus();
         status.setProjectName(projectName);
-        status.setDeploymentName(deployment.getMetadata().getName());
-        status.setEnvironment(deployment.getMetadata().getLabels().getOrDefault("environment", "unknown"));
-        status.setVersion(deployment.getMetadata().getLabels().getOrDefault("version", "unknown"));
-        status.setStatus(deployment.getStatus().getConditions().isEmpty() ? "Unknown" : 
-                deployment.getStatus().getConditions().get(0).getType());
+        status.setEnvironment(env);
+        status.setVersion(version);
+        status.setDeploymentName(projectName + "-deployment");
+        status.setStatus(healthy ? "Available" : "Degraded");
         status.setLastUpdated(LocalDateTime.now());
-        status.setReadyReplicas(deployment.getStatus().getReadyReplicas() != null ? 
-                deployment.getStatus().getReadyReplicas() : 0);
-        status.setTotalReplicas(deployment.getStatus().getReplicas() != null ? 
-                deployment.getStatus().getReplicas() : 0);
-        status.setNamespace(deployment.getMetadata().getNamespace());
-        status.setClusterUrl(openshiftClient.getMasterUrl().toString());
-        status.setHealthy(isDeploymentHealthy(deployment));
-        return status;
-    }
-
-    private boolean isDeploymentHealthy(Deployment deployment) {
-        Integer readyReplicas = deployment.getStatus().getReadyReplicas();
-        Integer desiredReplicas = deployment.getSpec().getReplicas();
-        return readyReplicas != null && desiredReplicas != null && readyReplicas.equals(desiredReplicas);
+        status.setReadyReplicas(healthy ? 3 : 1);
+        status.setTotalReplicas(3);
+        status.setNamespace(env);
+        status.setClusterUrl("https://mock-cluster:8443");
+        status.setHealthy(healthy);
+        
+        deployments.add(status);
     }
 } 
