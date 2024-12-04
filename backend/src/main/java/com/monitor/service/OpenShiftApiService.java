@@ -20,7 +20,7 @@ public class OpenShiftApiService {
     public OpenShiftApiService(
             @Value("${openshift.url}") String openshiftUrl,
             AuthService authService) {
-        this.baseUrl = openshiftUrl;
+        this.baseUrl = openshiftUrl.replace("oauth-openshift.apps", "api");
         this.authService = authService;
         this.restTemplate = new RestTemplate();
     }

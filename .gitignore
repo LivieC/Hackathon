@@ -16,6 +16,9 @@ target/
 **/tmp/
 **/out-tsc/
 
+# Ignore Angular cache
+.angular/cache/
+
 # misc
 **/.sass-cache
 **/connect.lock

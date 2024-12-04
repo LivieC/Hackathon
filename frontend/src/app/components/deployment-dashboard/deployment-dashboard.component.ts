@@ -3,6 +3,7 @@ import { DeploymentService } from '../../services/deployment.service';
 import { DeploymentStatus } from '../../models/deployment-status';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-deployment-dashboard',
@@ -50,5 +51,12 @@ export class DeploymentDashboardComponent implements OnInit, OnDestroy {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
+  }
+
+  exportToExcel(): void {
+    const worksheet = XLSX.utils.json_to_sheet(this.filteredDeployments);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Deployments');
+    XLSX.writeFile(workbook, 'deployments.xlsx');
   }
 } 

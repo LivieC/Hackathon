@@ -3,23 +3,32 @@
     <h2>OpenShift Login</h2>
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          [(ngModel)]="username" 
-          name="username" 
-          required>
+        <label>
+          <input type="radio" name="loginType" [(ngModel)]="isTokenLogin" [value]="false" /> Username/Password
+        </label>
+        <label>
+          <input type="radio" name="loginType" [(ngModel)]="isTokenLogin" [value]="true" /> Token
+        </label>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          [(ngModel)]="password" 
-          name="password" 
-          required>
+
+      <div *ngIf="!isTokenLogin">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" [(ngModel)]="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" [(ngModel)]="password" name="password" required />
+        </div>
       </div>
+
+      <div *ngIf="isTokenLogin">
+        <div class="form-group">
+          <label for="token">Token</label>
+          <input type="text" id="token" [(ngModel)]="token" name="token" required />
+        </div>
+      </div>
+
       <div class="error" *ngIf="error">{{ error }}</div>
       <button type="submit">Login</button>
     </form>

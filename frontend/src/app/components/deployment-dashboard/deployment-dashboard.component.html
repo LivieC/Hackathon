@@ -10,10 +10,12 @@
   </div>
 
   <div class="environment-tabs">
-    <button class="tab" [class.active]="selectedEnv === 'sit'" (click)="selectedEnv = 'sit'">SIT</button>
-    <button class="tab" [class.active]="selectedEnv === 'uat'" (click)="selectedEnv = 'uat'">UAT</button>
-    <button class="tab" [class.active]="selectedEnv === 'prod'" (click)="selectedEnv = 'prod'">PROD</button>
+    <button class="tab" [class.active]="selectedEnv === 'sit'" (click)="selectedEnv = 'sit'; filterDeployments()">SIT</button>
+    <button class="tab" [class.active]="selectedEnv === 'uat'" (click)="selectedEnv = 'uat'; filterDeployments()">UAT</button>
+    <button class="tab" [class.active]="selectedEnv === 'prod'" (click)="selectedEnv = 'prod'; filterDeployments()">PROD</button>
   </div>
+
+  <button (click)="exportToExcel()">Export to Excel</button>
 
   <div class="deployments-grid">
     <div *ngFor="let deployment of filteredDeployments" class="deployment-card" [class.healthy]="deployment.healthy">

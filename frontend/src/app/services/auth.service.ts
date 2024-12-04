@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap, switchMap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -13,32 +13,27 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<any> {
-    // OpenShift OAuth token endpoint
-    const tokenUrl = `${environment.openshiftUrl}/oauth/authorize/token`;
-    const credentials = btoa(`${username}:${password}`);
+    // 使用 OAuth password grant flow
+    const tokenUrl = `${environment.openshiftUrl}/oauth/token`;
+    const formData = new URLSearchParams();
+    formData.append('grant_type', 'password');
+    formData.append('username', username);
+    formData.append('password', password);
     
     const headers = new HttpHeaders({
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + btoa('openshift-challenging-client:') // 使用内置的 client
     });
 
-    const body = 'grant_type=password&scope=user:full';
-
-    return this.http.post(tokenUrl, body, { headers }).pipe(
+    return this.http.post(tokenUrl, formData.toString(), { headers }).pipe(
       tap((response: any) => {
         this.token = response.access_token;
-      }),
-      switchMap(() => {
-        // 确保 token 不为 null
-        if (!this.token) {
-          throw new Error('Failed to obtain token');
-        }
-        return this.sendTokenToBackend(this.token);
       })
     );
   }
 
-  private sendTokenToBackend(token: string): Observable<any> {
+  setToken(token: string): Observable<any> {
+    this.token = token;
     return this.http.post(`${environment.apiUrl}/api/auth/token`, { token });
   }
 

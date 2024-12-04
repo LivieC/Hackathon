@@ -10,7 +10,9 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  error: string = '';
+  token: string = '';
+  error: string | null = null;
+  isTokenLogin: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -18,13 +20,26 @@ export class LoginComponent {
   ) {}
 
   onSubmit() {
-    this.authService.login(this.username, this.password).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.error = 'Login failed. Please check your credentials.';
-      }
-    });
+    if (this.isTokenLogin) {
+      this.authService.setToken(this.token).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          this.error = 'Token login failed';
+          console.error('Error logging in with token:', error);
+        }
+      });
+    } else {
+      this.authService.login(this.username, this.password).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          this.error = 'Login failed. Please check your credentials.';
+          console.error('Error logging in:', error);
+        }
+      });
+    }
   }
 } 
