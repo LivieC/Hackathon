@@ -27,7 +27,7 @@ header {
   margin: 10px 0;
 }
 
-.view-mode-selector {
+.filter-container {
   margin: 20px 0;
 }
 
@@ -47,16 +47,12 @@ header {
   background-color: #f2f2f2;
 }
 
-.deployment-list {
-  list-style-type: none;
-  padding: 0;
+.deployment-table tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.deployment-list li {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin: 10px 0;
-  background: white;
+.deployment-table tr:hover {
+  background-color: #f1f1f1;
 }
 
 footer {
