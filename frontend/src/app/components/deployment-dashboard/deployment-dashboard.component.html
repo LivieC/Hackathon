@@ -9,29 +9,33 @@
     {{ error }}
   </div>
 
-  <div class="environment-tabs">
-    <button class="tab" [class.active]="selectedEnv === 'sit'" (click)="selectedEnv = 'sit'; filterDeployments()">SIT</button>
-    <button class="tab" [class.active]="selectedEnv === 'uat'" (click)="selectedEnv = 'uat'; filterDeployments()">UAT</button>
-    <button class="tab" [class.active]="selectedEnv === 'prod'" (click)="selectedEnv = 'prod'; filterDeployments()">PROD</button>
-  </div>
+  <label>
+    <input type="checkbox" [(ngModel)]="showHealthyOnly" (change)="filterDeployments()" />
+    Show only healthy deployments
+  </label>
 
-  <button (click)="exportToExcel()">Export to Excel</button>
-
-  <div class="deployments-grid">
-    <div *ngFor="let deployment of filteredDeployments" class="deployment-card" [class.healthy]="deployment.healthy">
-      <div class="card-header">
-        <h3>{{ deployment.projectName }}</h3>
-        <span class="status-badge" [class.success]="deployment.healthy">
-          {{ deployment.status }}
-        </span>
-      </div>
-      
-      <div class="deployment-details">
-        <p><strong>Version:</strong> {{ deployment.version }}</p>
-        <p><strong>Namespace:</strong> {{ deployment.namespace }}</p>
-        <p><strong>Replicas:</strong> {{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</p>
-        <p><strong>Last Updated:</strong> {{ deployment.lastUpdated | date:'medium' }}</p>
-      </div>
-    </div>
-  </div>
+  <table class="deployment-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Project Name</th>
+        <th>Status</th>
+        <th>Version</th>
+        <th>Namespace</th>
+        <th>Replicas</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let deployment of filteredDeployments; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ deployment.projectName }}</td>
+        <td>{{ deployment.status }}</td>
+        <td>{{ deployment.version }}</td>
+        <td>{{ deployment.namespace }}</td>
+        <td>{{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</td>
+        <td>{{ deployment.lastUpdated | date:'medium' }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div> 
