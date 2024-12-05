@@ -1,5 +1,10 @@
 <div class="dashboard-container">
-  <h1>Deployment Status Dashboard</h1>
+  <header>
+    <h1>Deployment Status Dashboard</h1>
+    <div class="user-info">
+      <p>Welcome, {{ userInfo.name }} ({{ userInfo.email }})</p>
+    </div>
+  </header>
 
   <div *ngIf="loading" class="loading">
     Loading deployment status...
@@ -14,28 +19,56 @@
     Show only healthy deployments
   </label>
 
-  <table class="deployment-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Project Name</th>
-        <th>Status</th>
-        <th>Version</th>
-        <th>Namespace</th>
-        <th>Replicas</th>
-        <th>Last Updated</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let deployment of filteredDeployments; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ deployment.projectName }}</td>
-        <td>{{ deployment.status }}</td>
-        <td>{{ deployment.version }}</td>
-        <td>{{ deployment.namespace }}</td>
-        <td>{{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</td>
-        <td>{{ deployment.lastUpdated | date:'medium' }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="view-mode-selector">
+    <label>
+      <input type="radio" name="viewMode" [(ngModel)]="viewMode" value="table" (change)="filterDeployments()" /> Table View
+    </label>
+    <label>
+      <input type="radio" name="viewMode" [(ngModel)]="viewMode" value="list" (change)="filterDeployments()" /> List View
+    </label>
+  </div>
+
+  <div *ngIf="viewMode === 'table'">
+    <table class="deployment-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Project Name</th>
+          <th>Status</th>
+          <th>Version</th>
+          <th>Namespace</th>
+          <th>Replicas</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let deployment of filterDeployments(); let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ deployment.projectName }}</td>
+          <td>{{ deployment.status }}</td>
+          <td>{{ deployment.version }}</td>
+          <td>{{ deployment.namespace }}</td>
+          <td>{{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</td>
+          <td>{{ deployment.lastUpdated | date:'medium' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="viewMode === 'list'">
+    <ul class="deployment-list">
+      <li *ngFor="let deployment of filterDeployments()">
+        <h3>{{ deployment.projectName }}</h3>
+        <p>Status: {{ deployment.status }}</p>
+        <p>Version: {{ deployment.version }}</p>
+        <p>Namespace: {{ deployment.namespace }}</p>
+        <p>Replicas: {{ deployment.readyReplicas }}/{{ deployment.totalReplicas }}</p>
+        <p>Last Updated: {{ deployment.lastUpdated | date:'medium' }}</p>
+      </li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+  </footer>
 </div> 

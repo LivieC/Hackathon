@@ -9,10 +9,11 @@ import { DeploymentStatus } from '../../models/deployment-status';
 })
 export class DeploymentDashboardComponent implements OnInit {
   deployments: DeploymentStatus[] = [];
-  filteredDeployments: DeploymentStatus[] = [];
   loading = true;
   error: string | null = null;
   showHealthyOnly: boolean = false;
+  viewMode: 'table' | 'list' = 'table';
+  userInfo: { name: string; email: string } = { name: 'User Name', email: 'user@example.com' };
 
   constructor(private deploymentService: DeploymentService) {}
 
@@ -24,7 +25,6 @@ export class DeploymentDashboardComponent implements OnInit {
     this.deploymentService.getDeployments().subscribe({
       next: (data) => {
         this.deployments = data;
-        this.filterDeployments();
         this.loading = false;
         this.error = null;
       },
@@ -36,8 +36,8 @@ export class DeploymentDashboardComponent implements OnInit {
     });
   }
 
-  filterDeployments(): void {
-    this.filteredDeployments = this.deployments.filter(deployment => {
+  filterDeployments(): DeploymentStatus[] {
+    return this.deployments.filter(deployment => {
       return !this.showHealthyOnly || deployment.healthy;
     });
   }
